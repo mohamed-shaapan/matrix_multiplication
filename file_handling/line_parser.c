@@ -1,6 +1,6 @@
 // import libraries
 // *******************************************
-//#include "line_parser.h"
+#include "line_parser.h"
 
 #include <stdlib.h>
 #include <stdio.h>

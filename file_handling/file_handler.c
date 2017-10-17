@@ -1,6 +1,7 @@
 // import libraries
 // *******************************************
 #include "file_handler.h"
+#include "line_parser.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -22,9 +23,11 @@ int **load_matrix(char *file_directory);{
   char matrix_info[20];
   fgets(matrix_info, 20, pointer);
 
-  int rows=matrix_info[4];
-  int cols=matrix_info[10];
-  char **result_matrix=malloc(rows*cols*sizeof(int));
+
+  int *dims=get_matrix_dimensions(matrix_info);
+  int row_size=dims[0]; int col_size=dims[1];
+
+  /*char **result_matrix=malloc(rows*cols*sizeof(int));
 
   // 02_read from file
   int curr_row=0;
@@ -45,7 +48,7 @@ int **load_matrix(char *file_directory);{
   fclose(pointer);
 
   // return alue
-  return lines_as_list;
+  return lines_as_list;*/
 
 }
 
