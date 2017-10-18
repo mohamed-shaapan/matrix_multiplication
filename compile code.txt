@@ -1,1 +1,4 @@
 gcc try.c file_handling/line_parser.c
+
+
+gcc try.c file_handling/line_parser.c

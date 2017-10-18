@@ -65,12 +65,17 @@ int *convert_row_values(char **row_as_string, int row_size){
   /*
     this function converts row from string to int
   */
+  //int result[row_size];
   int *result=malloc(row_size*sizeof(int));
-  int index=1;
-  while(index<=row_size){
-    result[index-1]=atoi(row_as_string[index-1]);
+  int index=0;
+
+  while(row_as_string[index]!=NULL){
+    //printf("\nToken : %s\n", row_as_string[index]);
+    result[index]=atoi(row_as_string[index]);
     index++;
   }
+
+  //printf("\nGOT HERE ****************\n");
 
   return result;
 
@@ -81,7 +86,7 @@ int *convert_row_values(char **row_as_string, int row_size){
 // *******************************************
 #define TOK_BUFSIZE 64
 #define TOK_DELIM "\t"
-int *parse_matrix_row(char *curr_row, int row_size){
+int *parse_matrix_row(char curr_row[], int row_size){
 
     int bufsize = TOK_BUFSIZE, position = 0;
     char **tokens = malloc(bufsize * sizeof(char*));
@@ -104,9 +109,8 @@ int *parse_matrix_row(char *curr_row, int row_size){
 
     tokens[position] = NULL;
 
-    int *result=convert_row_values(tokens, row_size);
-
-    return result;
+    
+    return convert_row_values(tokens, row_size);
 }
 
 

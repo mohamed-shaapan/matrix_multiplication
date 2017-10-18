@@ -60,8 +60,8 @@ void load_matrix_file(char *file_directory){
 
 int main(){
 
-	char *dir="io_matrices/a.txt";
-	load_matrix(dir);
+  char *dir="io_matrices/a.txt";
+  load_matrix(dir);
 
-	return 0;
+  return 0;
 }
