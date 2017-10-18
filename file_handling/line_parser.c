@@ -75,8 +75,6 @@ int *convert_row_values(char **row_as_string, int row_size){
     index++;
   }
 
-  //printf("\nGOT HERE ****************\n");
-
   return result;
 
 }
