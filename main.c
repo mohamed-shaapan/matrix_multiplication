@@ -3,16 +3,8 @@
 #include <stdio.h>
 
 
-// global variables
-// ********************************************
 
-
-// internal functions
-// ********************************************
-
-
-
-// main functions
+// main function
 // *******************************************
 int main(int argc, char *argv[]){
 
@@ -31,14 +23,14 @@ int main(int argc, char *argv[]){
     }
  
     // 02 - load matrix into memory
-    int **matrix_a;
-    int **matrix_b;
-    int **matrix_c;
-
+    int **matrix_a=load_matrix(matrix_a_dir);
+    int **matrix_b=load_matrix(matrix_b_dir);
 
     // 03 - operate on matrix
+    int **matrix_c=multiply_matrices_element_wise(matrix_a, matrix_b);
 
     // 04 - store result
+    store_matrix(matrix_c, matrix_c_dir);
 
     
     return 0;
