@@ -1,16 +1,1 @@
-gcc try.c file_handling/line_parser.c
-
-
-gcc try.c file_handling/.c
-
-
-
-gcc main.c file_handling/line_parser.c file_handling/file_handler.c
-
-gcc try.c file_handling/line_parser.c file_handling/file_handler.c
-
-
-gcc -pthread try.c file_handling/line_parser.c file_handling/file_handler.c
-
-
 gcc -pthread main.c file_handling/line_parser.c file_handling/file_handler.c operation_handling/element_wise_multiplier.c operation_handling/row_wise_multiplier.c

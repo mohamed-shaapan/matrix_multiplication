@@ -6,6 +6,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <sys/time.h>
 
 
 // internal functions
@@ -45,7 +46,7 @@ int main(int argc, char *argv[]){
       	matrix_c_dir="io_matrices/c.txt";
     }
  
-    // 02 - load matrix into memory
+    // 02 - load matrix into memory **************************
     int **matrix_a; int *matrix_a_dims;
     load_matrix(matrix_a_dir, &matrix_a_dims, &matrix_a);
     //print_matrix(matrix_a_dims, matrix_a);
@@ -54,20 +55,33 @@ int main(int argc, char *argv[]){
     load_matrix(matrix_b_dir, &matrix_b_dims, &matrix_b);
     //print_matrix(matrix_b_dims, matrix_b);
 
-    // apply multiplication algorithm
 
+    // apply multiplication algorithm ************************
     //element-wise threading
+    struct timeval element_start, element_stop;
     int **element_wise_result;
     int *element_wise_dims;
+
+    gettimeofday(&element_start, NULL); // start checking time
     multiply_matrices_element(matrix_a, matrix_a_dims, matrix_b, matrix_b_dims, &element_wise_result, &element_wise_dims);
+    gettimeofday(&element_stop, NULL); // stop checking time
     
     // row-wise threading
+    struct timeval row_start, row_stop;
     int **row_wise_result;
     int *row_wise_dims;
+
+    gettimeofday(&row_start, NULL); // start checking time
     multiply_matrices_row(matrix_a, matrix_a_dims, matrix_b, matrix_b_dims, &row_wise_result, &row_wise_dims);
-    
-    // 04 - store result
+    gettimeofday(&row_stop, NULL); // start checking time
+
+    // 04 - store result ************************************
     store_matrix(element_wise_dims, element_wise_result, matrix_c_dir);
+
+
+    // 05 - display compare result **************************
+    printf("\nElement Multp Time (micro): %lu\n", element_stop.tv_usec - element_start.tv_usec);
+    printf("\nRow Multp Time (micro): %lu\n", row_stop.tv_usec - row_start.tv_usec);
 
     
     return 0;
