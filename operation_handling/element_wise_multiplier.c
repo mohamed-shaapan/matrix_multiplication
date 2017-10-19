@@ -15,8 +15,8 @@ struct thread_parms{
 	int **result_matrix;
 
 	int row_index;
+	int col_index;
 
-	int col_span;
 	int element_span;
 
 };
@@ -27,23 +27,15 @@ void* calculate_element(void* args){
 
 	struct thread_parms *parms=(struct thread_parms*) args;
 
-	int col_index;
-	for(col_index=0; col_index<parms->col_span; col_index++){
-
-		int sum=0;
-		int element_index=0;
-		for(element_index=0; element_index<parms->element_span; element_index++){
-			int a=parms->matrix_a[parms->row_index][element_index];
-			int b=parms->matrix_b[element_index][col_index];
-			sum+=a*b;
-			//printf("\nMultiplying : %d,%d\n", a,b);
-		}
-
-		parms->result_matrix[parms->row_index][col_index]=sum;
-
+	int sum=0;
+	int element_index=0;
+	for(element_index=0; element_index<parms->element_span; element_index++){
+		int a=parms->matrix_a[parms->row_index][element_index];
+		int b=parms->matrix_b[element_index][parms->col_index];
+		sum+=a*b;
+		//printf("\nMultiplying : %d,%d\n", a,b);
 	}
-
-	
+	parms->result_matrix[parms->row_index][parms->col_index]=sum;
 
 	pthread_exit(0);
 
@@ -63,39 +55,46 @@ void multiply_matrices(int **matrix_a, int *a_dims, int **matrix_b, int *b_dims,
 	int **result_matrix=malloc(result_dims[0]*sizeof(int));
 
 	// initialize threads matrix
-	pthread_t tids[result_dims[0]];
-	struct thread_parms args[result_dims[0]];
+	pthread_t tids[result_dims[0]][result_dims[1]];
+	struct thread_parms args[result_dims[0]][result_dims[1]];
 	
 	// implement multiplication
 	int row_index=0;
+	int col_index=0;
 	for(row_index=0; row_index<result_dims[0]; row_index++){
 
-		// allocate result matrix row
 		result_matrix[row_index]=malloc(result_dims[1]*sizeof(int));
 
-		// initialize arguments
-		args[row_index].matrix_a=matrix_a;
-		args[row_index].matrix_b=matrix_b;
-		args[row_index].result_matrix=result_matrix;
-		args[row_index].row_index=row_index;
-		args[row_index].col_span=result_dims[1];
-		args[row_index].element_span=a_dims[1];
+		for(col_index=0; col_index<result_dims[1]; col_index++){
 
-		// launch thread
-		pthread_attr_t attr;
-		pthread_attr_init(&attr);
-		pthread_create(&tids[row_index], &attr, calculate_element, &args[row_index]);
+			// initialize arguments
+			args[row_index][col_index].matrix_a=matrix_a;
+			args[row_index][col_index].matrix_b=matrix_b;
+			args[row_index][col_index].result_matrix=result_matrix;
+			args[row_index][col_index].row_index=row_index;
+			args[row_index][col_index].col_index=col_index;
+			args[row_index][col_index].element_span=a_dims[1];
 
-		//pthread_join(tids[row_index][col_index], NULL);
+			// launch thread
+			pthread_attr_t attr;
+			pthread_attr_init(&attr);
+			pthread_create(&tids[row_index][col_index], &attr, calculate_element, &args[row_index][col_index]);
 
+			//pthread_join(tids[row_index][col_index], NULL);
+
+		}
 
 	}
 
 
 	// wait on threads
 	for(row_index=0; row_index<result_dims[0]; row_index++){
-		// join threads
-		pthread_join(tids[row_index], NULL);
+
+		for(col_index=0; col_index<result_dims[1]; col_index++){
+			// join threads
+			pthread_join(tids[row_index][col_index], NULL);
+
+		}
 
 	}
 
@@ -151,7 +150,6 @@ int main(){
 	multiply_matrices(matrix_a, matrix_a_dims, matrix_b, matrix_b_dims, &matrix_c, &matrix_c_dims);
 
 	print_matrix(matrix_c_dims, matrix_c);
-	
 	/*free(matrix_a); free(matrix_b); free(matrix_a_dims); free(matrix_b_dims);
 	store_matrix(matrix_c_dims, matrix_c, matrix_c_dir);*/
 
