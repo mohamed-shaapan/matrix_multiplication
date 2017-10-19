@@ -6,7 +6,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-
+// internal methods
+// *******************************************
 char *read_input_line(FILE *file_pointer){
 
     char *line = NULL;
@@ -17,9 +18,9 @@ char *read_input_line(FILE *file_pointer){
     return line;
 }
 
-// read matrix from file
+// load matrix from file
 // *******************************************
-int **load_matrix(char *file_directory){
+int load_matrix(char *file_directory, int **dims, int ***matrix){
 
   // 01 - open file
   FILE *file_pointer;
@@ -27,14 +28,14 @@ int **load_matrix(char *file_directory){
 
   // 02 - read matrix size
   char *matrix_info=read_input_line(file_pointer);
-  int *dims=get_matrix_dimensions(matrix_info);
-  int row_size=dims[0]; int col_size=dims[1];
-  free(dims);
+  int *tmp_dims;
+  get_matrix_dimensions(matrix_info, &tmp_dims);
+  int row_size=tmp_dims[0]; int col_size=tmp_dims[1];
+  *dims=tmp_dims;
   free(matrix_info);
 
   // 02_read from file
-  //int result_matrix[row_size][col_size];
-  int **result_matrix=malloc(row_size*col_size*sizeof(int));
+  int **result_matrix=malloc(row_size*sizeof(int));
   //memset(result_matrix, -1, row_size*col_size*sizeof(int));
   int row_index=0;
   int col_index=0;
@@ -46,9 +47,9 @@ int **load_matrix(char *file_directory){
     curr_line=read_input_line(file_pointer);
     int *row_as_int=parse_matrix_row(curr_line, col_size);
 
+    result_matrix[row_index]=malloc(col_size*sizeof(int));
     for(col_index=0; col_index<col_size; col_index++){
-      //result_matrix[row_index][col_index]=row_as_int[col_index];
-      printf("\nElement [][] = %d\n", result_matrix[row_index][col_index]);
+      result_matrix[row_index][col_index]=row_as_int[col_index];
     }
 
     row_index++;
@@ -58,38 +59,23 @@ int **load_matrix(char *file_directory){
   // 03_close file
   fclose(file_pointer);
 
-  /*for(row_index=0; row_index<row_size; row_index++){
-    for(col_index=0; col_index<col_size; col_index++){
-      printf("%d\t", result_matrix[row_index][col_index]);
-    }
-    printf("\n");
-  }*/
-
-  return result_matrix;
+  *matrix=result_matrix;
 
 }
 
 
-int main(){
 
-  load_matrix("io_matrices/a.txt");
-
-  return 0;
-}
-
-
-
-
-
-void store_matrix(int **matrix, char *file_directory){
+// store matrix to file
+// *******************************************
+void store_matrix(int **matrix, int *dims, char *file_directory){
 
   // 01 - open file
   FILE *file_pointer;
   file_pointer=fopen(file_directory, "w");
    
   // 02 - write to file
-  int row_index; int row_size;
-  int col_index; int col_size;
+  int row_index=0; int row_size=dims[0];
+  int col_index=0; int col_size=dims[1];
 
   for(row_index=0; row_index<row_size; row_size++){
     
@@ -112,3 +98,34 @@ void store_matrix(int **matrix, char *file_directory){
 
 }
 
+
+
+
+void test_load_matrix(){
+
+  int *dims;
+  int **matrix;
+  load_matrix("io_matrices/a.txt", &dims, &matrix);
+
+  printf("\nRows = %d,\tCols = %d\n\n", dims[0], dims[1]);
+
+  int row_index;
+  int col_index;
+  for(row_index=0; row_index<dims[0]; row_index++){
+    for(col_index=0; col_index<dims[1]; col_index++){
+      printf("%d\t", matrix[row_index][col_index]);
+    }
+    printf("\n");
+  }
+
+}
+
+
+int main(){
+
+  
+  test_load_matrix();
+
+
+  return 0;
+}

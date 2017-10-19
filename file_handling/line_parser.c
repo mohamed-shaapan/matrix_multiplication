@@ -10,7 +10,7 @@
 // interface methods
 // *******************************************
 #define MAX_DIM_SIZE 5
-int *get_matrix_dimensions(char *matrix_info){
+int get_matrix_dimensions(char *matrix_info, int **dims){
 
   int *dimensions=malloc(2*sizeof(int));
   int result_index=0;
@@ -55,7 +55,7 @@ int *get_matrix_dimensions(char *matrix_info){
 
 }
 
-    return dimensions;
+    *dims=dimensions;
 
 }
 

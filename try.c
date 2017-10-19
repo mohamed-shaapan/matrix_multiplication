@@ -19,7 +19,7 @@ char *read_input_line(FILE *file_pointer){
 
 // read matrix from file
 // *******************************************
-int **load_matrix(char *file_directory, int *matrix_dims){
+int load_matrix(char *file_directory, int **dims, int ***matrix){
 
   // 01 - open file
   FILE *file_pointer;
@@ -27,16 +27,14 @@ int **load_matrix(char *file_directory, int *matrix_dims){
 
   // 02 - read matrix size
   char *matrix_info=read_input_line(file_pointer);
-  int *dims=get_matrix_dimensions(matrix_info);
-  int row_size=dims[0]; int col_size=dims[1];
-  matrix_dims[0]=row_size; matrix_dims[1]=col_size;
-  //free(dims);
+  int *tmp_dims;
+  get_matrix_dimensions(matrix_info, &tmp_dims);
+  int row_size=tmp_dims[0]; int col_size=tmp_dims[1];
+  *dims=tmp_dims;
   free(matrix_info);
 
   // 02_read from file
-  //int result_matrix[row_size][col_size];
   int **result_matrix=malloc(row_size*sizeof(int));
-  //result_matrix=malloc(row_size*sizeof(int));
   //memset(result_matrix, -1, row_size*col_size*sizeof(int));
   int row_index=0;
   int col_index=0;
@@ -51,7 +49,6 @@ int **load_matrix(char *file_directory, int *matrix_dims){
     result_matrix[row_index]=malloc(col_size*sizeof(int));
     for(col_index=0; col_index<col_size; col_index++){
       result_matrix[row_index][col_index]=row_as_int[col_index];
-      //printf("\nElement [][] = %d\n", result_matrix[row_index][col_index]);
     }
 
     row_index++;
@@ -61,21 +58,18 @@ int **load_matrix(char *file_directory, int *matrix_dims){
   // 03_close file
   fclose(file_pointer);
 
-  return result_matrix;
+  *matrix=result_matrix;
 
 }
 
 
 int main(){
 
-  int *dims=malloc(2*sizeof(int));
-  //int *dims;
-  int **matrix=load_matrix("io_matrices/a.txt", dims);
-  //int **matrix;
-  //load_matrix("io_matrices/a.txt", dims, matrix);
+  int *dims;
+  int **matrix;
+  load_matrix("io_matrices/a.txt", &dims, &matrix);
 
-
-  //printf("\nRows = %d,\tCols = %d\n", dims[0], dims[1]);
+  printf("\nRows = %d,\tCols = %d\n\n", dims[0], dims[1]);
 
   int row_index;
   int col_index;

@@ -5,7 +5,7 @@
 /* 
 	CommandsBatch file basic functions' prototypes
 */
-int *get_matrix_dimensions(char *matrix_info);
+int get_matrix_dimensions(char *matrix_info, int **dimensions);
 
 int *parse_matrix_row(char *curr_row, int row_size);
 
