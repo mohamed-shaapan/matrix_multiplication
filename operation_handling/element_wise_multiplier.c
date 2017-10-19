@@ -1,31 +1,16 @@
 // import libraries
 // *******************************************
-#include "file_handling/file_handler.h"
+#include "element_wise_multiplier.h"
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <pthread.h>
 
-// global variables
-// *******************************************
-struct thread_parms{
-
-	int **matrix_a;
-	int **matrix_b;
-	int **result_matrix;
-
-	int row_index;
-	int col_index;
-
-	int element_span;
-
-};
-
-// thread functions
+// thread function
 // *******************************************
 void* calculate_element(void* args){
 
-	struct thread_parms *parms=(struct thread_parms*) args;
+	struct element_thread_parms *parms=(struct element_thread_parms*) args;
 
 	int sum=0;
 	int element_index=0;
@@ -45,24 +30,25 @@ void* calculate_element(void* args){
 
 // interface methods
 // *******************************************
-void multiply_matrices(int **matrix_a, int *a_dims, int **matrix_b, int *b_dims, int ***matrix_c, int **matrix_c_dims){
+void multiply_matrices_element(int **matrix_a, int *a_dims, int **matrix_b, int *b_dims, int ***matrix_c, int **matrix_c_dims){
 
-	// initialize result matrix
+	// 01 - initialize result matrix
 	int *result_dims=malloc(2*sizeof(int));
 	result_dims[0]=a_dims[0];
 	result_dims[1]=b_dims[1];
 	*matrix_c_dims=result_dims;
 	int **result_matrix=malloc(result_dims[0]*sizeof(int));
 
-	// initialize threads matrix
+	// 02 - initialize threads matrix
 	pthread_t tids[result_dims[0]][result_dims[1]];
-	struct thread_parms args[result_dims[0]][result_dims[1]];
+	struct element_thread_parms args[result_dims[0]][result_dims[1]];
 	
-	// implement multiplication
+	// 03 - implement multiplication
 	int row_index=0;
 	int col_index=0;
 	for(row_index=0; row_index<result_dims[0]; row_index++){
 
+		// allocate result matrix row
 		result_matrix[row_index]=malloc(result_dims[1]*sizeof(int));
 
 		for(col_index=0; col_index<result_dims[1]; col_index++){
@@ -87,7 +73,7 @@ void multiply_matrices(int **matrix_a, int *a_dims, int **matrix_b, int *b_dims,
 	}
 
 
-	// wait on threads
+	// 04 - wait on threads
 	for(row_index=0; row_index<result_dims[0]; row_index++){
 
 		for(col_index=0; col_index<result_dims[1]; col_index++){
@@ -98,64 +84,9 @@ void multiply_matrices(int **matrix_a, int *a_dims, int **matrix_b, int *b_dims,
 
 	}
 
-	// return final result
+	// 05 - return final result
 	*matrix_c=result_matrix;
 
 }
 
-
-// internal functions
-// *******************************************
-void print_matrix(int *dims, int **matrix){
-    
-    int row_index;
-    int col_index;
-
-    for(row_index=0; row_index<dims[0]; row_index++){
-
-        for(col_index=0; col_index<dims[1]; col_index++){
-            printf("%d\t", matrix[row_index][col_index]);
-        }
-
-        printf("\n");
-    }
-
-    printf("\n\n");
-}
-
-
-
-// main function
-// *******************************************
-int main(){
-
-	// load matrix into memory
-	// ******************************************
-	char *matrix_a_dir="io_matrices/a.txt";
-	char *matrix_b_dir="io_matrices/b.txt";
-	char *matrix_c_dir="io_matrices/c.txt";
-
-	int **matrix_a; int *matrix_a_dims;
-    load_matrix(matrix_a_dir, &matrix_a_dims, &matrix_a);
-    //print_matrix(matrix_a_dims, matrix_a);
-
-    int **matrix_b; int *matrix_b_dims;
-    load_matrix(matrix_b_dir, &matrix_b_dims, &matrix_b);
-    //print_matrix(matrix_b_dims, matrix_b);
-
-    // operate on matrix
-	// ******************************************
-	int **matrix_c;
-	int *matrix_c_dims;
-	multiply_matrices(matrix_a, matrix_a_dims, matrix_b, matrix_b_dims, &matrix_c, &matrix_c_dims);
-
-	print_matrix(matrix_c_dims, matrix_c);
-	/*free(matrix_a); free(matrix_b); free(matrix_a_dims); free(matrix_b_dims);
-	store_matrix(matrix_c_dims, matrix_c, matrix_c_dir);*/
-
-	
-
-
-
-}
 

@@ -1,6 +1,8 @@
 // import libraries
 // ********************************************
 #include "file_handling/file_handler.h"
+#include "operation_handling/element_wise_multiplier.h"
+#include "operation_handling/row_wise_multiplier.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -52,12 +54,20 @@ int main(int argc, char *argv[]){
     load_matrix(matrix_b_dir, &matrix_b_dims, &matrix_b);
     //print_matrix(matrix_b_dims, matrix_b);
 
+    // apply multiplication algorithm
 
-    // 03 - operate on matrix
-    int **matrix_c=multiply_matrices_element_wise(matrix_a, matrix_b);
-
+    //element-wise threading
+    int **element_wise_result;
+    int *element_wise_dims;
+    multiply_matrices_element(matrix_a, matrix_a_dims, matrix_b, matrix_b_dims, &element_wise_result, &element_wise_dims);
+    
+    // row-wise threading
+    int **row_wise_result;
+    int *row_wise_dims;
+    multiply_matrices_row(matrix_a, matrix_a_dims, matrix_b, matrix_b_dims, &row_wise_result, &row_wise_dims);
+    
     // 04 - store result
-    //store_matrix(matrix_c, matrix_c_dir);
+    store_matrix(element_wise_dims, element_wise_result, matrix_c_dir);
 
     
     return 0;
