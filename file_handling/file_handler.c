@@ -81,3 +81,34 @@ int main(){
 
 
 
+void store_matrix(int **matrix, char *file_directory){
+
+  // 01 - open file
+  FILE *file_pointer;
+  file_pointer=fopen(file_directory, "w");
+   
+  // 02 - write to file
+  int row_index; int row_size;
+  int col_index; int col_size;
+
+  for(row_index=0; row_index<row_size; row_size++){
+    
+    for(col_index=0; col_index<col_size; col_index++){
+
+      if(col_index==col_size-1){
+        fprintf(file_pointer, "%d", matrix[row_index][col_index]);
+      }else{
+        fprintf(file_pointer, "%d\t", matrix[row_index][col_index]);
+      }
+      
+    }
+
+    fprintf(file_pointer, "\n");
+
+  }
+
+  // 03 - close file
+  fclose(file_pointer);
+
+}
+
