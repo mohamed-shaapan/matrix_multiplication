@@ -1,6 +1,7 @@
 // import libraries
 // *******************************************
-#include "file_handling/line_parser.h"
+#include "line_parser.h"
+#include "file_handler.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -67,7 +68,7 @@ int load_matrix(char *file_directory, int **dims, int ***matrix){
 
 // store matrix to file
 // *******************************************
-void store_matrix(int **matrix, int *dims, char *file_directory){
+void store_matrix(int *dims, int **matrix, char *file_directory){
 
   // 01 - open file
   FILE *file_pointer;
@@ -77,7 +78,7 @@ void store_matrix(int **matrix, int *dims, char *file_directory){
   int row_index=0; int row_size=dims[0];
   int col_index=0; int col_size=dims[1];
 
-  for(row_index=0; row_index<row_size; row_size++){
+  for(row_index=0; row_index<row_size; row_index++){
     
     for(col_index=0; col_index<col_size; col_index++){
 
@@ -100,8 +101,9 @@ void store_matrix(int **matrix, int *dims, char *file_directory){
 
 
 
-
-void test_load_matrix(){
+// testing modules
+// *******************************************
+/*void test_load_matrix(){
 
   int *dims;
   int **matrix;
@@ -118,14 +120,18 @@ void test_load_matrix(){
     printf("\n");
   }
 
+  store_matrix(matrix, dims, "io_matrices/test.txt");
+
 }
 
-
+// *******************************************
 int main(){
 
   
   test_load_matrix();
+  //store_matrix(matrix, dims, "io_matrices/test.txt");
 
 
   return 0;
-}
+}*/
+// *******************************************

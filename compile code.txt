@@ -2,3 +2,7 @@ gcc try.c file_handling/line_parser.c
 
 
 gcc try.c file_handling/.c
+
+
+
+gcc main.c file_handling/line_parser.c file_handling/file_handler.c

@@ -1,7 +1,27 @@
 // import libraries
 // ********************************************
-#include <stdio.h>
+#include "file_handling/file_handler.h"
 
+#include <stdio.h>
+#include <stdlib.h>
+
+
+// internal functions
+// *******************************************
+void print_matrix(int *dims, int **matrix){
+    
+    int row_index;
+    int col_index;
+
+    for(row_index=0; row_index<dims[0]; row_index++){
+
+        for(col_index=0; col_index<dims[1]; col_index++){
+            printf("%d\t", matrix[row_index][col_index]);
+        }
+
+        printf("\n");
+    }
+}
 
 
 // main function
@@ -9,28 +29,35 @@
 int main(int argc, char *argv[]){
 
     // 01 - get matrix file names
+    char *matrix_a_dir; char *matrix_b_dir; char *matrix_c_dir;
     if( argc > 1 ){
     	// use given file names
-    	char *matrix_a_dir=argv[0];
-    	char *matrix_b_dir=argv[1];
-    	char *matrix_c_dir=argv[2];
+    	matrix_a_dir=argv[0];
+    	matrix_b_dir=argv[1];
+    	matrix_c_dir=argv[2];
     }
     else{
       // use default file names
-    	char *matrix_a_dir="a.txt";
-      	char *matrix_b_dir="b.txt";
-      	char *matrix_c_dir="c.txt";
+    	matrix_a_dir="io_matrices/a.txt";
+      	matrix_b_dir="io_matrices/b.txt";
+      	matrix_c_dir="io_matrices/c.txt";
     }
  
     // 02 - load matrix into memory
-    int **matrix_a=load_matrix(matrix_a_dir);
-    int **matrix_b=load_matrix(matrix_b_dir);
+    int **matrix_a; int *matrix_a_dims;
+    load_matrix(matrix_a_dir, &matrix_a_dims, &matrix_a);
+    //print_matrix(matrix_a_dims, matrix_a);
+
+    int **matrix_b; int *matrix_b_dims;
+    load_matrix(matrix_b_dir, &matrix_b_dims, &matrix_b);
+    //print_matrix(matrix_b_dims, matrix_b);
+
 
     // 03 - operate on matrix
     int **matrix_c=multiply_matrices_element_wise(matrix_a, matrix_b);
 
     // 04 - store result
-    store_matrix(matrix_c, matrix_c_dir);
+    //store_matrix(matrix_c, matrix_c_dir);
 
     
     return 0;

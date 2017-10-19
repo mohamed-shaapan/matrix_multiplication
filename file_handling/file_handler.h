@@ -5,9 +5,9 @@
 /* 
 	CommandsBatch file basic functions' prototypes
 */
-int **load_matrix(char *file_directory);
+int load_matrix(char *file_directory, int **dims, int ***matrix);
 
-void store_matrix(char *file_directory, int **matrix);
+void store_matrix(int *dims, int **matrix, char *file_directory);
 
 
 
